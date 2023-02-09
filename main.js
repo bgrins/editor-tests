@@ -9,9 +9,37 @@ import smalltext from "./textsmall.js";
 console.log(ace);
 const CODE_EDITORS = [[codemirror, "CodeMirror"], /*monaco,*/[ace, "Ace"]];
 const TEXT_EDITORS = [[tiptap, "TipTap"]];
+const CREATED_EDITORS = [];
+let container = document.querySelector("#editors");
 
 const currentText = () => document.querySelector("#size").checked ? bigtext : smalltext;
 const currentSelectedEditor = () => document.querySelector(`[name="editor"]:checked`)?.value;
+const currentSize = () => document.querySelector(`[name="size"]:checked`)?.value || 100;
+const sizeOptions = () => [...document.querySelectorAll(`[name="size"]`)];
+const editorOptions = () => [...document.querySelectorAll(`[name="editor"]`)];
+
+document.querySelector("#run").addEventListener("click", async (e) => {
+  for (let size of sizeOptions()) {
+    size.click();
+    for (let editor of editorOptions()) {
+      // editor.checked = true;
+      editor.click();
+      for (let i of [1,2]) {
+        document.querySelector("#size").click();
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+      // showActiveEditor();
+      // resizeEditors();
+    }
+  }
+
+  // for (let i of CODE_EDITORS.concat(TEXT_EDITORS)) {
+  //   i.setValue(currentText());
+  // }
+});
+
+
 const radioContainer = document.querySelector("#editor-options");
 function showActiveEditor() {
   let container = document.querySelector(`#editor-${currentSelectedEditor()}`);
@@ -21,15 +49,15 @@ function showActiveEditor() {
 }
 function resizeEditors() {
   document.querySelectorAll("#editors > div").forEach((el) => {
-    console.log(el.parentElement);
-    el.style.height = `${el.parentElement.offsetHeight}px`;
-    el.style.width = `${el.parentElement.offsetWidth}px`;
+    let percent = currentSize();
+    el.style.height = `${el.parentElement.offsetHeight * (percent * .01)}px`;
+    el.style.width = `${el.parentElement.offsetWidth * (percent * .01)}px`;
   });
 }
 
-
 document.querySelector("#size").addEventListener("change", (e) => {
-  for (let i of editors) {
+  for (let i of CREATED_EDITORS) {
+
     i.setValue(currentText());
   }
 });
@@ -37,8 +65,6 @@ document.querySelector("#size").addEventListener("change", (e) => {
 radioContainer.addEventListener("change", (e) => {
   showActiveEditor();
 });
-let container = document.querySelector("#editors");
-let editors = [];
 
 
 function createEditor(editor, displayName) {
@@ -54,7 +80,7 @@ function createEditor(editor, displayName) {
   label.textContent = displayName;
   radioContainer.append(radio, label);
   container.append(el);
-  editors.push(editor(el, currentText()));
+  CREATED_EDITORS.push(editor(el, currentText()));
 }
 
 for (let [editor, displayName] of CODE_EDITORS) {
@@ -67,6 +93,12 @@ for (let [editor, displayName] of TEXT_EDITORS) {
 
 resizeEditors();
 window.addEventListener("resize", resizeEditors);
+document.addEventListener("change", (e) => {
+  if (e.target.name === "size") {
+    resizeEditors();
+  }
+
+})
 
 if (!currentSelectedEditor()) {
   document.querySelector(`[name="editor"]`).checked = true;
