@@ -22,10 +22,13 @@ const editorOptions = () => [...document.querySelectorAll(`[name="editor"]`)];
 document.querySelector("#run").addEventListener("click", async (e) => {
   for (let editor of editorOptions()) {
     // editor.checked = true;
+    performance.mark(`Editor - ${editor.value}`);
     editor.click();
     for (let size of sizeOptions()) {
+      performance.mark(`Size - ${size.value}%`);
       size.click();
       for (let textSize of textOptions()) {
+        performance.mark(`Text Size - ${textSize.value}%`);
         textSize.click();
         // for (let pos of [1000,0]) {
         //   container.scroll({
