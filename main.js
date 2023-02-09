@@ -12,38 +12,39 @@ const TEXT_EDITORS = [[tiptap, "TipTap"]];
 const CREATED_EDITORS = [];
 let container = document.querySelector("#editors");
 
-const currentText = () => document.querySelector("#size").checked ? bigtext : smalltext;
+const currentText = () => document.querySelector(`[name="text"]:checked`)?.value === "large" ? bigtext : smalltext;
 const currentSelectedEditor = () => document.querySelector(`[name="editor"]:checked`)?.value;
 const currentSize = () => document.querySelector(`[name="size"]:checked`)?.value || 100;
+const textOptions = () => [...document.querySelectorAll(`[name="text"]`)];
 const sizeOptions = () => [...document.querySelectorAll(`[name="size"]`)];
 const editorOptions = () => [...document.querySelectorAll(`[name="editor"]`)];
 
 document.querySelector("#run").addEventListener("click", async (e) => {
-  for (let size of sizeOptions()) {
-    size.click();
-    for (let editor of editorOptions()) {
-      // editor.checked = true;
-      editor.click();
-      for (let i of [1,2]) {
-        document.querySelector("#size").click();
+  for (let editor of editorOptions()) {
+    // editor.checked = true;
+    editor.click();
+    for (let size of sizeOptions()) {
+      size.click();
+      for (let textSize of textOptions()) {
+        textSize.click();
+        // for (let pos of [1000,0]) {
+        //   container.scroll({
+        //     top: pos,
+        //     left: 0,
+        //     behavior: 'smooth'
+        //   });
+        // }
         await new Promise((resolve) => requestAnimationFrame(resolve));
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
-      // showActiveEditor();
-      // resizeEditors();
     }
   }
-
-  // for (let i of CODE_EDITORS.concat(TEXT_EDITORS)) {
-  //   i.setValue(currentText());
-  // }
 });
 
 
 const radioContainer = document.querySelector("#editor-options");
 function showActiveEditor() {
   let container = document.querySelector(`#editor-${currentSelectedEditor()}`);
-  console.log(container);
   document.querySelectorAll("#editors > div.active").forEach((el) => el.classList.remove("active"));
   container.classList.add("active");
 }
@@ -54,18 +55,6 @@ function resizeEditors() {
     el.style.width = `${el.parentElement.offsetWidth * (percent * .01)}px`;
   });
 }
-
-document.querySelector("#size").addEventListener("change", (e) => {
-  for (let i of CREATED_EDITORS) {
-
-    i.setValue(currentText());
-  }
-});
-
-radioContainer.addEventListener("change", (e) => {
-  showActiveEditor();
-});
-
 
 function createEditor(editor, displayName) {
   let el = document.createElement("div");
@@ -93,9 +82,21 @@ for (let [editor, displayName] of TEXT_EDITORS) {
 
 resizeEditors();
 window.addEventListener("resize", resizeEditors);
+radioContainer.addEventListener("change", (e) => {
+  showActiveEditor();
+});
+
 document.addEventListener("change", (e) => {
   if (e.target.name === "size") {
     resizeEditors();
+  }
+  if (e.target.name === "editor") {
+    showActiveEditor();
+  }
+  if (e.target.name === "text") {
+    for (let i of CREATED_EDITORS) {
+      i.setValue(currentText());
+    }
   }
 
 })
