@@ -19,6 +19,14 @@ function showActiveEditor() {
   document.querySelectorAll("#editors > div.active").forEach((el) => el.classList.remove("active"));
   container.classList.add("active");
 }
+function resizeEditors() {
+  document.querySelectorAll("#editors > div").forEach((el) => {
+    console.log(el.parentElement);
+    el.style.height = `${el.parentElement.offsetHeight}px`;
+    el.style.width = `${el.parentElement.offsetWidth}px`;
+  });
+}
+
 
 document.querySelector("#size").addEventListener("change", (e) => {
   for (let i of editors) {
@@ -31,6 +39,7 @@ radioContainer.addEventListener("change", (e) => {
 });
 let container = document.querySelector("#editors");
 let editors = [];
+
 
 function createEditor(editor, displayName) {
   let el = document.createElement("div");
@@ -55,8 +64,11 @@ for (let [editor, displayName] of TEXT_EDITORS) {
   createEditor(editor, displayName, "text");
 }
 
+
+resizeEditors();
+window.addEventListener("resize", resizeEditors);
+
 if (!currentSelectedEditor()) {
   document.querySelector(`[name="editor"]`).checked = true;
 }
-
 showActiveEditor();
