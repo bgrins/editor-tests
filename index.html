@@ -5,16 +5,25 @@
     <link rel="icon" type="image/svg+xml" href="./vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
-    <script type="module" crossorigin src="./assets/index-ec95e471.js"></script>
-    <link rel="stylesheet" href="./assets/index-0a113a15.css">
+    <script type="module" crossorigin src="./assets/index-9b145da8.js"></script>
+    <link rel="stylesheet" href="./assets/index-74142ac7.css">
   </head>
   <body>
     <header>
       <h1>Editor tests</h1>
       <div id="editor-options" class="options"></div>
       <div class="options">
-        <label><input id="size" type="checkbox" />Big</label>
+        <label><input id="size" type="checkbox" />Big text</label>
       </div>
+      <div class="options">
+        <input id="small-size" name="size" type="radio" value="15" />
+        <label for="small-size">Small size</label>
+        <input id="medium-size" name="size" type="radio" value="50" />
+        <label for="medium-size">Medium size</label>
+        <input id="large-size" name="size" type="radio" value="100" />
+        <label for="large-size">Large size</label>
+      </div>
+      <button id="run">Run</button>
     </header>
     <main id="app">
       <div id="editors"></div>
