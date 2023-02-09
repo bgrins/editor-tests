@@ -1,5 +1,6 @@
 import { EditorView, basicSetup } from "codemirror"
 
+export const displayName = "CodeMirror";
 export default function (element, value) {
   let view = new EditorView({
     extensions: [basicSetup, EditorView.lineWrapping],
