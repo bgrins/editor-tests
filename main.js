@@ -31,7 +31,7 @@ const EDITORS = {
   },
   Quill: {
     ctor: quill,
-    disabled: true,
+    // disabled: true,
     type: "text",
   },
   EditorJS: {
