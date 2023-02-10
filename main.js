@@ -107,9 +107,6 @@ async function runTests() {
       await new Promise((resolve) => requestAnimationFrame(resolve));
     }
     ed.resize();
-    if (RAF_BETWEEN_STEPS) {
-      await new Promise((resolve) => requestAnimationFrame(resolve));
-    }
     ed.editor.setValue(ed.type == "code" ? currentCode() : currentText());
 
     await new Promise((resolve) => requestAnimationFrame(resolve));
