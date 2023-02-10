@@ -74,7 +74,7 @@ function createEditor(editor, displayName) {
   label.textContent = displayName;
   radioContainer.append(radio, label);
   container.append(el);
-  CREATED_EDITORS.push(editor(el, currentText()));
+  CREATED_EDITORS.push([editor(el, currentText()), displayName]);
 }
 
 for (let [editor, displayName] of CODE_EDITORS) {
@@ -99,8 +99,10 @@ document.addEventListener("change", (e) => {
     showActiveEditor();
   }
   if (e.target.name === "text") {
-    for (let i of CREATED_EDITORS) {
-      i.setValue(currentText());
+    for (let [editor, displayName] of CREATED_EDITORS) {
+      if (displayName == currentSelectedEditor()) {
+        editor.setValue(currentText());
+      }
     }
   }
 
