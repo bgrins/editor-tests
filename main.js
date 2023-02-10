@@ -20,6 +20,7 @@ const DEFAULT_EDITOR = new URLSearchParams(window.location.search).get(
   "editor"
 );
 const ALLOW_QUILL = new URLSearchParams(window.location.search).has("quill");
+const AUTO_RUN = new URLSearchParams(window.location.search).has("autorun");
 const EDITORS = {
   Monaco: {
     ctor: monaco,
@@ -210,6 +211,13 @@ document.addEventListener("change", (e) => {
     ed.editor.format(currentFormatting());
   }
 });
-
-// Allow selction like http://localhost:5173/?editor=Ace
+// Allow selection like http://localhost:5173/?editor=Ace
 EDITORS[DEFAULT_EDITOR]?.input.click();
+
+if (AUTO_RUN) {
+  // Todo find a better way to make the whole initialization process async so
+  // this doesn't have to be special cased
+  EDITORS.EditorJS.editor.editor.isReady.then(() => {
+    runTests();
+  });
+}

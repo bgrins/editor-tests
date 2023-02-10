@@ -18,6 +18,7 @@ export default function (element, value) {
     },
   });
 
+  // Todo editor is async, so we need to wait for it to be ready before we can set the value
   return {
     editor,
     setValue: (value) => {
