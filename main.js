@@ -9,7 +9,7 @@ import bigtext from "./textbig.js";
 import smalltext from "./textsmall.js";
 
 console.log(ace);
-const CODE_EDITORS = [[codemirror, "CodeMirror"], /*monaco,*/[ace, "Ace"]];
+const CODE_EDITORS = [[codemirror, "CodeMirror"], [monaco, "Monaco"], [ace, "Ace"]];
 const TEXT_EDITORS = [[tiptap, "TipTap"], [quill, "Quill"], [editorjs, "EditorJS"]];
 const CREATED_EDITORS = [];
 let container = document.querySelector("#editors");

@@ -19,6 +19,7 @@
     "vite": "^4.1.0"
   },
   "dependencies": {
-    "@editorjs/editorjs": "^2.26.5"
+    "@editorjs/editorjs": "^2.26.5",
+    "vite-plugin-monaco-editor": "^1.1.0"
   }
 }
