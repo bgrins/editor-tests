@@ -16,8 +16,22 @@ export default function (element, value) {
       }),
     }
   });
+
   return {
     editor,
-    setValue: value => quill.setText(value)
+    setValue: value => {
+      // https://github.com/codex-team/editor.js/issues/781
+      editor.render({
+        blocks: value.split("\n").map(value => {
+          return {
+            type: 'paragraph',
+            data: {
+              text: value,
+            },
+          }
+        })
+
+      })
+    }
   }
 }
