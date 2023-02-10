@@ -32,7 +32,7 @@ const EDITORS = {
   },
   Quill: {
     ctor: quill,
-    disabled: true,
+    // disabled: true, // Disable due to MutationEvents
     type: "text",
   },
   EditorJS: {
