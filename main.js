@@ -5,6 +5,7 @@ import monaco from "./editors/monaco.js";
 import ace from "./editors/ace.js";
 import quill from "./editors/quill.js";
 import editorjs from "./editors/editorjs.js";
+import tinymce from "./editors/tinymce.js";
 import bigtext from "./textbig.js";
 import smalltext from "./textsmall.js";
 import bigcode from "./codebig.js";
@@ -36,6 +37,10 @@ const EDITORS = {
   },
   EditorJS: {
     ctor: editorjs,
+    type: "text",
+  },
+  TinyMCE: {
+    ctor: tinymce,
     type: "text",
   },
 };
@@ -72,12 +77,12 @@ document.querySelector("#run").addEventListener("click", async (e) => {
       }
     }
   }
-  for (let [editor, size, textSize] of permutations) {
+  for (let [editor, textSize, size] of permutations) {
     performance.mark(
-      `${editor.value} - ${size.value} viewport - ${textSize.value} text`
+      `${editor.value} - ${size.value}% viewport - ${textSize.value} text`
     );
     console.time(
-      `${editor.value} - ${size.value} viewport - ${textSize.value} text`
+      `${editor.value} - ${size.value}% viewport - ${textSize.value} text`
     );
     // Not actually clicking the option radios because we don't want it to auto
     // populate the text with the current value (which may require duplicating
@@ -89,7 +94,7 @@ document.querySelector("#run").addEventListener("click", async (e) => {
     editor.click();
     await new Promise((resolve) => requestAnimationFrame(resolve));
     console.timeEnd(
-      `${editor.value} - ${size.value} viewport - ${textSize.value} text`
+      `${editor.value} - ${size.value}% viewport - ${textSize.value} text`
     );
   }
   console.timeEnd("Automated run");
@@ -144,7 +149,7 @@ for (let id in EDITORS) {
 }
 
 window.addEventListener("resize", () => {
-  currentSelectedEditor()?.resize(); 
+  currentSelectedEditor()?.resize();
 });
 
 document.addEventListener("change", (e) => {
@@ -164,5 +169,5 @@ document.addEventListener("change", (e) => {
 });
 
 if (!currentSelectedEditor()) {
-  document.querySelector(`[name="editor"]`).click()
+  document.querySelector(`[name="editor"]`).click();
 }
