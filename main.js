@@ -13,6 +13,7 @@ import smallcode from "./codesmall.js";
 
 let container = document.querySelector("#editors");
 const USE_DELAY = new URLSearchParams(window.location.search).has("delay");
+const RAF_BETWEEN_STEPS = new URLSearchParams(window.location.search).has("raf");
 const DEFAULT_EDITOR = new URLSearchParams(window.location.search).get(
   "editor"
 );
@@ -102,7 +103,13 @@ async function runTests() {
 
     let ed = currentSelectedEditor();
     showActiveEditor();
+    if (RAF_BETWEEN_STEPS) {
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    }
     ed.resize();
+    if (RAF_BETWEEN_STEPS) {
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    }
     ed.editor.setValue(ed.type == "code" ? currentCode() : currentText());
 
     await new Promise((resolve) => requestAnimationFrame(resolve));
