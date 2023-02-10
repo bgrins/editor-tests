@@ -1,4 +1,4 @@
-import { EditorView, basicSetup } from "codemirror"
+import { EditorView, basicSetup } from "codemirror";
 
 export const displayName = "CodeMirror";
 export default function (element, value) {
@@ -7,10 +7,13 @@ export default function (element, value) {
     parent: element,
     doc: value,
     wordWrapColumn: 80,
-  })
+  });
 
   return {
     editor: view,
-    setValue: value => view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: value } })
-  }
+    setValue: (value) =>
+      view.dispatch({
+        changes: { from: 0, to: view.state.doc.length, insert: value },
+      }),
+  };
 }

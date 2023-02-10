@@ -10,15 +10,31 @@ import smalltext from "./textsmall.js";
 import bigcode from "./codebig.js";
 import smallcode from "./codesmall.js";
 
-const CODE_EDITORS = [[monaco, "Monaco"], [codemirror, "CodeMirror"], [ace, "Ace"]];
-const TEXT_EDITORS = [[tiptap, "TipTap"], [quill, "Quill"], [editorjs, "EditorJS"]];
+const CODE_EDITORS = [
+  [monaco, "Monaco"],
+  [codemirror, "CodeMirror"],
+  [ace, "Ace"],
+];
+const TEXT_EDITORS = [
+  [tiptap, "TipTap"],
+  [quill, "Quill"],
+  [editorjs, "EditorJS"],
+];
 const CREATED_EDITORS = [];
 let container = document.querySelector("#editors");
 
-const currentText = () => document.querySelector(`[name="text"]:checked`)?.value === "large" ? bigtext : smalltext;
-const currentCode = () => document.querySelector(`[name="text"]:checked`)?.value === "large" ? bigcode : smallcode;
-const currentSelectedEditor = () => document.querySelector(`[name="editor"]:checked`)?.value;
-const currentSize = () => document.querySelector(`[name="size"]:checked`)?.value || 100;
+const currentText = () =>
+  document.querySelector(`[name="text"]:checked`)?.value === "large"
+    ? bigtext
+    : smalltext;
+const currentCode = () =>
+  document.querySelector(`[name="text"]:checked`)?.value === "large"
+    ? bigcode
+    : smallcode;
+const currentSelectedEditor = () =>
+  document.querySelector(`[name="editor"]:checked`)?.value;
+const currentSize = () =>
+  document.querySelector(`[name="size"]:checked`)?.value || 100;
 const textOptions = () => [...document.querySelectorAll(`[name="text"]`)];
 const sizeOptions = () => [...document.querySelectorAll(`[name="size"]`)];
 const editorOptions = () => [...document.querySelectorAll(`[name="editor"]`)];
@@ -41,27 +57,32 @@ document.querySelector("#run").addEventListener("click", async (e) => {
         //     behavior: 'smooth'
         //   });
         // }
-        console.time(`${editor.value} - ${size.value}% size - ${textSize.value} text`);
+        console.time(
+          `${editor.value} - ${size.value}% size - ${textSize.value} text`
+        );
         await new Promise((resolve) => requestAnimationFrame(resolve));
-        console.timeEnd(`${editor.value} - ${size.value}% size - ${textSize.value} text`);
+        console.timeEnd(
+          `${editor.value} - ${size.value}% size - ${textSize.value} text`
+        );
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
     }
   }
 });
 
-
 const radioContainer = document.querySelector("#editor-options");
 function showActiveEditor() {
   let container = document.querySelector(`#editor-${currentSelectedEditor()}`);
-  document.querySelectorAll("#editors > div.active").forEach((el) => el.classList.remove("active"));
+  document
+    .querySelectorAll("#editors > div.active")
+    .forEach((el) => el.classList.remove("active"));
   container.classList.add("active");
 }
 function resizeEditors() {
   document.querySelectorAll("#editors > div").forEach((el) => {
     let percent = currentSize();
-    el.style.height = `${el.parentElement.offsetHeight * (percent * .01)}px`;
-    el.style.width = `${el.parentElement.offsetWidth * (percent * .01)}px`;
+    el.style.height = `${el.parentElement.offsetHeight * (percent * 0.01)}px`;
+    el.style.width = `${el.parentElement.offsetWidth * (percent * 0.01)}px`;
   });
 }
 
@@ -88,7 +109,6 @@ for (let [editor, displayName] of TEXT_EDITORS) {
   createEditor(editor, displayName, "text");
 }
 
-
 resizeEditors();
 window.addEventListener("resize", resizeEditors);
 radioContainer.addEventListener("change", (e) => {
@@ -109,7 +129,7 @@ document.addEventListener("change", (e) => {
       }
     }
   }
-})
+});
 
 if (!currentSelectedEditor()) {
   document.querySelector(`[name="editor"]`).checked = true;

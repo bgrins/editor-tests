@@ -1,18 +1,16 @@
-import { Editor } from '@tiptap/core'
-import StarterKit from '@tiptap/starter-kit'
+import { Editor } from "@tiptap/core";
+import StarterKit from "@tiptap/starter-kit";
 
-export default function(element, value) {
+export default function (element, value) {
   let editor = new Editor({
     element,
-    extensions: [
-      StarterKit,
-    ],
+    extensions: [StarterKit],
     content: value,
   });
   return {
     editor,
     setValue(value) {
       editor.commands.setContent(value);
-    }
-  }
+    },
+  };
 }

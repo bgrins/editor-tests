@@ -23,7 +23,7 @@ header {
 h1 {
   flex: 1;
   font-size: 14px;
-  margin: 0; 
+  margin: 0;
   padding: 0;
 }
 
@@ -71,7 +71,6 @@ main {
   margin-right: 5px;
 }
 
-
 .options > label {
   display: inline-block;
   min-width: 60px;
@@ -102,7 +101,8 @@ main {
   }
 }
 
-.cm-editor, .ProseMirror {
+.cm-editor,
+.ProseMirror {
   height: 100%;
   overflow: auto;
 }
