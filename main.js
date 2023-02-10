@@ -189,6 +189,9 @@ window.addEventListener("resize", () => {
 
 document.addEventListener("change", (e) => {
   let ed = currentSelectedEditor();
+  if (!ed) {
+    return;
+  }
   if (e.target.name === "size") {
     ed.resize();
   }
