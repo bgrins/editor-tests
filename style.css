@@ -106,3 +106,9 @@ main {
   height: 100%;
   overflow: auto;
 }
+/* 
+.monaco-editor {
+  height: 100% !important;
+  width: 100% !important;
+  overflow: auto;
+} */
