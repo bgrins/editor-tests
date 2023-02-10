@@ -42,6 +42,18 @@ export default function (element, value) {
     setValue(value) {
       tinymce.activeEditor.setContent(value);
     },
-    format(on) {},
+    format(on) {
+      // There's a bug if the editor hasn't been initialized yet, but in practice
+      // it's alright as long as the editor isn't chosen before that, since format
+      // will be called when it's chosen.
+      if (tinymce.activeEditor.selection) {
+        tinymce.activeEditor.selection.select(
+          tinymce.activeEditor.getBody(),
+          true
+        );
+        tinymce.activeEditor.execCommand("Bold", false, on);
+        tinymce.activeEditor.selection.collapse();
+      }
+    },
   };
 }

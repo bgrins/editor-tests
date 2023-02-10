@@ -12,6 +12,14 @@ export default function (element, value) {
     setValue(value) {
       editor.commands.setContent(value);
     },
-    format(on) {},
+    format(on) {
+      editor.commands.selectAll()
+      if (on) {
+        editor.chain().focus().setBold().run();
+      } else {
+        editor.chain().focus().unsetBold().run();
+      }
+      editor.commands.setTextSelection(0)
+    },
   };
 }

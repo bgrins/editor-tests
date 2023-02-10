@@ -11,6 +11,8 @@ export default function (element, value) {
   return {
     editor: quill,
     setValue: (value) => quill.setText(value),
-    format(on) {},
+    format(on) {
+      quill.formatText(0, quill.getLength(), "bold", on);
+    },
   };
 }

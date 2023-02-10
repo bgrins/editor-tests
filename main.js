@@ -13,9 +13,14 @@ import smallcode from "./codesmall.js";
 
 let container = document.querySelector("#editors");
 const USE_DELAY = new URLSearchParams(window.location.search).has("delay");
-const RAF_BETWEEN_STEPS = new URLSearchParams(window.location.search).has("raf");
+const RAF_BETWEEN_STEPS = new URLSearchParams(window.location.search).has(
+  "raf"
+);
 const DEFAULT_EDITOR = new URLSearchParams(window.location.search).get(
   "editor"
+);
+const ALLOW_QUILL = new URLSearchParams(window.location.search).has(
+  "quill"
 );
 const EDITORS = {
   Monaco: {
@@ -36,7 +41,7 @@ const EDITORS = {
   },
   Quill: {
     ctor: quill,
-    disabled: true, // Disable due to MutationEvents
+    disabled: !ALLOW_QUILL, // Disabled by default due to MutationEvents
     type: "text",
   },
   EditorJS: {
@@ -57,12 +62,17 @@ const currentCode = () =>
   document.querySelector(`[name="text"]:checked`)?.value === "large"
     ? bigcode
     : smallcode;
+const currentFormatting = () =>
+  document.querySelector(`[name="style"]:checked`)?.value === "fancy"
+    ? true
+    : false;
 const currentSelectedEditor = () =>
   EDITORS[document.querySelector(`[name="editor"]:checked`)?.value];
 const currentSize = () =>
   document.querySelector(`[name="size"]:checked`)?.value || 100;
 const textOptions = () => [...document.querySelectorAll(`[name="text"]`)];
 const sizeOptions = () => [...document.querySelectorAll(`[name="size"]`)];
+const styleOptions = () => [...document.querySelectorAll(`[name="style"]`)];
 const editorOptions = () => [...document.querySelectorAll(`[name="editor"]`)];
 
 let running = false;
@@ -77,7 +87,9 @@ async function runTests() {
   for (let editor of editorOptions()) {
     for (let textSize of textOptions()) {
       for (let size of sizeOptions()) {
-        permutations.push([editor, textSize, size]);
+        for (let style of styleOptions()) {
+          permutations.push([editor, textSize, size, style]);
+        }
       }
     }
   }
@@ -87,12 +99,12 @@ async function runTests() {
     EDITORS[id].editor?.setValue("");
   }
 
-  for (let [editor, textSize, size] of permutations) {
+  for (let [editor, textSize, size, style] of permutations) {
     performance.mark(
-      `${editor.value} - ${size.value}% viewport - ${textSize.value} text`
+      `${editor.value} - ${size.value}% viewport - ${textSize.value} text length - ${style.value} formatting`
     );
     console.time(
-      `${editor.value} - ${size.value}% viewport - ${textSize.value} text`
+      `${editor.value} - ${size.value}% viewport - ${textSize.value} text length - ${style.value} formatting`
     );
     // Not actually clicking the option radios because we don't want it to auto
     // populate the text with the current value (which may require duplicating
@@ -100,6 +112,7 @@ async function runTests() {
     size.checked = true;
     textSize.checked = true;
     editor.checked = true;
+    style.checked = true;
 
     let ed = currentSelectedEditor();
     showActiveEditor();
@@ -108,10 +121,11 @@ async function runTests() {
     }
     ed.resize();
     ed.editor.setValue(ed.type == "code" ? currentCode() : currentText());
+    ed.editor.format(currentFormatting());
 
     await new Promise((resolve) => requestAnimationFrame(resolve));
     console.timeEnd(
-      `${editor.value} - ${size.value}% viewport - ${textSize.value} text`
+      `${editor.value} - ${size.value}% viewport - ${textSize.value} text length - ${style.value} formatting`
     );
     if (USE_DELAY) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -181,17 +195,21 @@ document.addEventListener("change", (e) => {
   if (e.target.name === "size") {
     ed.resize();
   }
+  if (e.target.name === "style") {
+    ed.editor.format(currentFormatting());
+  }
   if (e.target.name === "text") {
     ed.editor.setValue(ed.type == "code" ? currentCode() : currentText());
+    ed.editor.format(currentFormatting());
   }
   if (e.target.name === "editor") {
     showActiveEditor();
 
     ed.resize();
     ed.editor.setValue(ed.type == "code" ? currentCode() : currentText());
+    ed.editor.format(currentFormatting());
   }
 });
 
 // Allow selction like http://localhost:5173/?editor=Ace
-EDITORS[DEFAULT_EDITOR]?.input.click()
-
+EDITORS[DEFAULT_EDITOR]?.input.click();
