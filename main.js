@@ -19,9 +19,7 @@ const RAF_BETWEEN_STEPS = new URLSearchParams(window.location.search).has(
 const DEFAULT_EDITOR = new URLSearchParams(window.location.search).get(
   "editor"
 );
-const ALLOW_QUILL = new URLSearchParams(window.location.search).has(
-  "quill"
-);
+const ALLOW_QUILL = new URLSearchParams(window.location.search).has("quill");
 const EDITORS = {
   Monaco: {
     ctor: monaco,
@@ -113,7 +111,6 @@ async function runTests() {
     textSize.checked = true;
     editor.checked = true;
     style.checked = true;
-
     let ed = currentSelectedEditor();
     showActiveEditor();
     if (RAF_BETWEEN_STEPS) {

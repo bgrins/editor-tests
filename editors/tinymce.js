@@ -51,7 +51,9 @@ export default function (element, value) {
           tinymce.activeEditor.getBody(),
           true
         );
-        tinymce.activeEditor.execCommand("Bold", false, on);
+        // Bold is only a toggle, so let's use something that we can be sure is
+        // always in the requested state.
+        document.execCommand("foreColor", false, on ? "red" : null);
         tinymce.activeEditor.selection.collapse();
       }
     },
