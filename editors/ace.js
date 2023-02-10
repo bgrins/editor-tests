@@ -1,8 +1,5 @@
 import * as ace from 'ace-builds/src-noconflict/ace';
 
-// console.log(ace);
-
-export const displayName = "Ace";
 export default function (element, value) {
   element.style.position = "relative";
 

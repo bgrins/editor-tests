@@ -6,7 +6,6 @@ import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 // import styles from './Editor.module.css';
 
-export const displayName = "Monaco";
 self.MonacoEnvironment = {
   getWorker(_, label) {
     if (label === 'json') {

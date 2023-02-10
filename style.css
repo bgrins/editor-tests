@@ -104,4 +104,5 @@ main {
 
 .cm-editor, .ProseMirror {
   height: 100%;
+  overflow: auto;
 }

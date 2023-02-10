@@ -3,12 +3,14 @@ import tiptap from "./editors/tiptap.js";
 import codemirror from "./editors/codemirror.js";
 import monaco from "./editors/monaco.js";
 import ace from "./editors/ace.js";
+import quill from "./editors/quill.js";
+import editorjs from "./editors/editorjs.js";
 import bigtext from "./textbig.js";
 import smalltext from "./textsmall.js";
 
 console.log(ace);
 const CODE_EDITORS = [[codemirror, "CodeMirror"], /*monaco,*/[ace, "Ace"]];
-const TEXT_EDITORS = [[tiptap, "TipTap"]];
+const TEXT_EDITORS = [[tiptap, "TipTap"], [quill, "Quill"], [editorjs, "EditorJS"]];
 const CREATED_EDITORS = [];
 let container = document.querySelector("#editors");
 
