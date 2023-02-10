@@ -33,8 +33,6 @@ export default function (element, value) {
     content_style: "",
   });
 
-  console.log(tinymce, tinymce.activeEditor);
-
   // https://www.tiny.cloud/blog/how-to-get-content-and-set-content-in-tinymce/
   // If this is set before the promise resolves there's no initial content.
   promise.then((_) => tinymce.activeEditor.setContent(value));

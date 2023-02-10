@@ -12,7 +12,7 @@ import bigcode from "./codebig.js";
 import smallcode from "./codesmall.js";
 
 let container = document.querySelector("#editors");
-
+const USE_DELAY = new URLSearchParams(window.location.search).has("delay");
 const EDITORS = {
   Monaco: {
     ctor: monaco,
@@ -89,13 +89,20 @@ document.querySelector("#run").addEventListener("click", async (e) => {
     // work like showing the large text first before switching to small).
     size.checked = true;
     textSize.checked = true;
+    editor.checked = true;
 
-    // Now that we've set the options, we can actually click the editor radio
-    editor.click();
+    let ed = currentSelectedEditor();
+    showActiveEditor();
+    ed.resize();
+    ed.editor.setValue(ed.type == "code" ? currentCode() : currentText());
+
     await new Promise((resolve) => requestAnimationFrame(resolve));
     console.timeEnd(
       `${editor.value} - ${size.value}% viewport - ${textSize.value} text`
     );
+    if (USE_DELAY) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
   }
   console.timeEnd("Automated run");
   running = false;
@@ -112,7 +119,8 @@ function showActiveEditor() {
   container.classList.add("active");
 }
 
-function resize(el, percent = currentSize()) {
+function resize(el, percent) {
+  percent = percent || currentSize();
   el.style.height = `${el.parentElement.offsetHeight * (percent * 0.01)}px`;
   el.style.width = `${el.parentElement.offsetWidth * (percent * 0.01)}px`;
 }
