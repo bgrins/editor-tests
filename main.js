@@ -7,14 +7,16 @@ import quill from "./editors/quill.js";
 import editorjs from "./editors/editorjs.js";
 import bigtext from "./textbig.js";
 import smalltext from "./textsmall.js";
+import bigcode from "./codebig.js";
+import smallcode from "./codesmall.js";
 
-console.log(ace);
-const CODE_EDITORS = [ /*[monaco, "Monaco"], */[codemirror, "CodeMirror"],[ace, "Ace"]];
+const CODE_EDITORS = [[monaco, "Monaco"], [codemirror, "CodeMirror"], [ace, "Ace"]];
 const TEXT_EDITORS = [[tiptap, "TipTap"], [quill, "Quill"], [editorjs, "EditorJS"]];
 const CREATED_EDITORS = [];
 let container = document.querySelector("#editors");
 
 const currentText = () => document.querySelector(`[name="text"]:checked`)?.value === "large" ? bigtext : smalltext;
+const currentCode = () => document.querySelector(`[name="text"]:checked`)?.value === "large" ? bigcode : smallcode;
 const currentSelectedEditor = () => document.querySelector(`[name="editor"]:checked`)?.value;
 const currentSize = () => document.querySelector(`[name="size"]:checked`)?.value || 100;
 const textOptions = () => [...document.querySelectorAll(`[name="text"]`)];
@@ -39,7 +41,9 @@ document.querySelector("#run").addEventListener("click", async (e) => {
         //     behavior: 'smooth'
         //   });
         // }
+        console.time(`${editor.value} - ${size.value}% size - ${textSize.value} text`);
         await new Promise((resolve) => requestAnimationFrame(resolve));
+        console.timeEnd(`${editor.value} - ${size.value}% size - ${textSize.value} text`);
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
     }
@@ -74,7 +78,7 @@ function createEditor(editor, displayName) {
   label.textContent = displayName;
   radioContainer.append(radio, label);
   container.append(el);
-  CREATED_EDITORS.push([editor(el, currentText()), displayName]);
+  CREATED_EDITORS.push([editor(el, currentCode()), displayName]);
 }
 
 for (let [editor, displayName] of CODE_EDITORS) {
@@ -101,11 +105,10 @@ document.addEventListener("change", (e) => {
   if (e.target.name === "text") {
     for (let [editor, displayName] of CREATED_EDITORS) {
       if (displayName == currentSelectedEditor()) {
-        editor.setValue(currentText());
+        editor.setValue(currentCode());
       }
     }
   }
-
 })
 
 if (!currentSelectedEditor()) {
