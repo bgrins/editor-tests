@@ -13,6 +13,7 @@ import smallcode from "./codesmall.js";
 
 let container = document.querySelector("#editors");
 const USE_DELAY = new URLSearchParams(window.location.search).has("delay");
+const DEFAULT_EDITOR = new URLSearchParams(window.location.search).get("editor");
 const EDITORS = {
   Monaco: {
     ctor: monaco,
@@ -32,7 +33,7 @@ const EDITORS = {
   },
   Quill: {
     ctor: quill,
-    // disabled: true, // Disable due to MutationEvents
+    disabled: true, // Disable due to MutationEvents
     type: "text",
   },
   EditorJS: {
@@ -62,7 +63,7 @@ const sizeOptions = () => [...document.querySelectorAll(`[name="size"]`)];
 const editorOptions = () => [...document.querySelectorAll(`[name="editor"]`)];
 
 let running = false;
-document.querySelector("#run").addEventListener("click", async (e) => {
+async function runTests() {
   if (running) {
     console.log("Already running, returning");
     return;
@@ -77,6 +78,12 @@ document.querySelector("#run").addEventListener("click", async (e) => {
       }
     }
   }
+  
+  // Reset
+  for (let id in EDITORS) {
+    EDITORS[id].editor?.setValue("");
+  }
+
   for (let [editor, textSize, size] of permutations) {
     performance.mark(
       `${editor.value} - ${size.value}% viewport - ${textSize.value} text`
@@ -106,7 +113,8 @@ document.querySelector("#run").addEventListener("click", async (e) => {
   }
   console.timeEnd("Automated run");
   running = false;
-});
+
+}
 
 const radioContainer = document.querySelector("#editor-options");
 
@@ -126,8 +134,6 @@ function resize(el, percent) {
 }
 
 function createControls(displayName) {
-  let el = document.createElement("div");
-  el.id = `editor-${displayName}`;
   let radio = document.createElement("input");
   radio.type = "radio";
   radio.name = "editor";
@@ -137,8 +143,7 @@ function createControls(displayName) {
   label.setAttribute("for", displayName);
   label.textContent = displayName;
   radioContainer.append(radio, label);
-  container.append(el);
-  return el;
+  return radio;
 }
 
 for (let id in EDITORS) {
@@ -147,14 +152,20 @@ for (let id in EDITORS) {
     continue;
   }
   ed.id = id;
-  ed.container = createControls(id);
+
+  ed.container = document.createElement("div");
+  ed.container.id = `editor-${id}`;
+  container.append(ed.container);
+  ed.input = createControls(id);
   ed.resize = resize.bind(null, ed.container);
 
   if (!ed.editor) {
     let el = document.querySelector(`#editor-${id}`);
-    ed.editor = ed.ctor(el, ed.type == "code" ? currentCode() : currentText());
+    ed.editor = ed.ctor(el, "");
   }
 }
+
+document.querySelector("#run").addEventListener("click", runTests);
 
 window.addEventListener("resize", () => {
   currentSelectedEditor()?.resize();
@@ -176,6 +187,6 @@ document.addEventListener("change", (e) => {
   }
 });
 
-if (!currentSelectedEditor()) {
-  document.querySelector(`[name="editor"]`).click();
-}
+// Allow selction like http://localhost:5173/?editor=Ace
+let defaultEditor = EDITORS[DEFAULT_EDITOR] || EDITORS.Monaco;
+defaultEditor.input.click();
