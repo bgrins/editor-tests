@@ -101,6 +101,15 @@ main {
   }
 }
 
+#editors > div.empty-message.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 20px;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.5);
+}
 .cm-editor,
 .ProseMirror {
   height: 100%;

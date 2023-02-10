@@ -189,5 +189,5 @@ document.addEventListener("change", (e) => {
 });
 
 // Allow selction like http://localhost:5173/?editor=Ace
-let defaultEditor = EDITORS[DEFAULT_EDITOR] || EDITORS.Monaco;
-defaultEditor.input.click();
+EDITORS[DEFAULT_EDITOR]?.input.click()
+
