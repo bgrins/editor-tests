@@ -10,6 +10,33 @@ import smalltext from "./textsmall.js";
 import bigcode from "./codebig.js";
 import smallcode from "./codesmall.js";
 
+const EDITORS = {
+  "Monaco": {
+    ctor: monaco,
+    type: "code", 
+  },
+  "CodeMirror": {
+    ctor: codemirror,
+    type: "code",
+  },
+  "Ace": {
+    ctor: ace,
+    type: "code",
+  },
+  "TipTap": {
+    ctor: tiptap,
+    type: "text",
+  },
+  "Quill": {
+    ctor: quill,
+    type: "text",
+  },
+  "EditorJS": {
+    ctor: editorjs,
+    type: "text",
+  },
+}
+
 const CODE_EDITORS = [
   [monaco, "Monaco"],
   [codemirror, "CodeMirror"],
@@ -20,7 +47,6 @@ const TEXT_EDITORS = [
   [quill, "Quill"],
   [editorjs, "EditorJS"],
 ];
-const CREATED_EDITORS = [];
 let container = document.querySelector("#editors");
 
 const currentText = () =>
@@ -78,6 +104,7 @@ function showActiveEditor() {
     .forEach((el) => el.classList.remove("active"));
   container.classList.add("active");
 }
+
 function resizeEditors() {
   document.querySelectorAll("#editors > div").forEach((el) => {
     let percent = currentSize();
@@ -99,14 +126,21 @@ function createEditor(editor, displayName) {
   label.textContent = displayName;
   radioContainer.append(radio, label);
   container.append(el);
-  CREATED_EDITORS.push([editor(el, currentCode()), displayName]);
 }
-
 for (let [editor, displayName] of CODE_EDITORS) {
   createEditor(editor, displayName, "code");
 }
 for (let [editor, displayName] of TEXT_EDITORS) {
   createEditor(editor, displayName, "text");
+}
+
+
+for (let id in EDITORS) {
+  let ed = EDITORS[id];
+  if (!ed.editor) {
+    let el = document.querySelector(`#editor-${id}`);
+    ed.editor = ed.ctor(el, ed.type == "code" ? currentCode() : currentText());
+  }
 }
 
 resizeEditors();
@@ -123,10 +157,9 @@ document.addEventListener("change", (e) => {
     showActiveEditor();
   }
   if (e.target.name === "text") {
-    for (let [editor, displayName] of CREATED_EDITORS) {
-      if (displayName == currentSelectedEditor()) {
-        editor.setValue(currentCode());
-      }
+    for (let id in EDITORS) {
+      let ed = EDITORS[id];
+      ed.editor.setValue(ed.type == "code" ? currentCode() : currentText());
     }
   }
 });
