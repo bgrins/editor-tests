@@ -31,7 +31,7 @@ const EDITORS = {
   },
   Quill: {
     ctor: quill,
-    // disabled: true,
+    disabled: true,
     type: "text",
   },
   EditorJS: {
@@ -56,62 +56,60 @@ const textOptions = () => [...document.querySelectorAll(`[name="text"]`)];
 const sizeOptions = () => [...document.querySelectorAll(`[name="size"]`)];
 const editorOptions = () => [...document.querySelectorAll(`[name="editor"]`)];
 
+let running = false;
 document.querySelector("#run").addEventListener("click", async (e) => {
+  if (running) {
+    console.log("Already running, returning");
+    return;
+  }
+  running = true;
   console.time("Automated run");
+  let permutations = [];
   for (let editor of editorOptions()) {
-    // editor.checked = true;
-    performance.mark(`Editor - ${editor.value}`);
-    editor.click();
-    for (let size of sizeOptions()) {
-      performance.mark(`Size - ${size.value}%`);
-      size.click();
-      for (let textSize of textOptions()) {
-        performance.mark(`Text Size - ${textSize.value}%`);
-        textSize.click();
-        // for (let pos of [1000,0]) {
-        //   container.scroll({
-        //     top: pos,
-        //     left: 0,
-        //     behavior: 'smooth'
-        //   });
-        // }
-        console.time(
-          `${editor.value} - ${size.value}% size - ${textSize.value} text`
-        );
-        await new Promise((resolve) => requestAnimationFrame(resolve));
-        console.timeEnd(
-          `${editor.value} - ${size.value}% size - ${textSize.value} text`
-        );
-        // await new Promise((resolve) => setTimeout(resolve, 100));
+    for (let textSize of textOptions()) {
+      for (let size of sizeOptions()) {
+        permutations.push([editor, textSize, size]);
       }
     }
   }
+  for (let [editor, size, textSize] of permutations) {
+    performance.mark(
+      `${editor.value} - ${size.value} viewport - ${textSize.value} text`
+    );
+    console.time(
+      `${editor.value} - ${size.value} viewport - ${textSize.value} text`
+    );
+    // Not actually clicking the option radios because we don't want it to auto
+    // populate the text with the current value (which may require duplicating
+    // work like showing the large text first before switching to small).
+    size.checked = true;
+    textSize.checked = true;
+
+    // Now that we've set the options, we can actually click the editor radio
+    editor.click();
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    console.timeEnd(
+      `${editor.value} - ${size.value} viewport - ${textSize.value} text`
+    );
+  }
   console.timeEnd("Automated run");
+  running = false;
 });
 
 const radioContainer = document.querySelector("#editor-options");
+
 function showActiveEditor() {
   let ed = currentSelectedEditor();
-  console.time(`Showing ${ed.id}`);
-  ed.editor.setValue(ed.type == "code" ? currentCode() : currentText());
   let container = ed.container;
   document
     .querySelectorAll("#editors > div.active")
     .forEach((el) => el.classList.remove("active"));
   container.classList.add("active");
-  console.timeEnd(`Showing ${ed.id}`);
 }
 
-function resize(el) {
-  let percent = currentSize();
+function resize(el, percent = currentSize()) {
   el.style.height = `${el.parentElement.offsetHeight * (percent * 0.01)}px`;
   el.style.width = `${el.parentElement.offsetWidth * (percent * 0.01)}px`;
-}
-
-function resizeEditors() {
-  document.querySelectorAll("#editors > div").forEach((el) => {
-    resize(el);
-  });
 }
 
 function createControls(displayName) {
@@ -145,24 +143,26 @@ for (let id in EDITORS) {
   }
 }
 
-resizeEditors();
-window.addEventListener("resize", resizeEditors);
+window.addEventListener("resize", () => {
+  currentSelectedEditor()?.resize(); 
+});
 
 document.addEventListener("change", (e) => {
+  let ed = currentSelectedEditor();
   if (e.target.name === "size") {
-    resizeEditors();
+    ed.resize();
+  }
+  if (e.target.name === "text") {
+    ed.editor.setValue(ed.type == "code" ? currentCode() : currentText());
   }
   if (e.target.name === "editor") {
     showActiveEditor();
-  }
-  if (e.target.name === "text") {
-    let ed = currentSelectedEditor();
+
+    ed.resize();
     ed.editor.setValue(ed.type == "code" ? currentCode() : currentText());
   }
 });
 
 if (!currentSelectedEditor()) {
-  document.querySelector(`[name="editor"]`).checked = true;
+  document.querySelector(`[name="editor"]`).click()
 }
-
-showActiveEditor();
