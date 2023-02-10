@@ -14,5 +14,6 @@ export default function (element, value) {
       editor.setValue(value);
       editor.selection.setRange(new ace.Range(0, 1, 0, 1));
     },
+    format(on) {},
   };
 }

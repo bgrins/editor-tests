@@ -12,5 +12,6 @@ export default function (element, value) {
     setValue(value) {
       editor.commands.setContent(value);
     },
+    format(on) {},
   };
 }

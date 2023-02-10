@@ -13,7 +13,9 @@ import smallcode from "./codesmall.js";
 
 let container = document.querySelector("#editors");
 const USE_DELAY = new URLSearchParams(window.location.search).has("delay");
-const DEFAULT_EDITOR = new URLSearchParams(window.location.search).get("editor");
+const DEFAULT_EDITOR = new URLSearchParams(window.location.search).get(
+  "editor"
+);
 const EDITORS = {
   Monaco: {
     ctor: monaco,
@@ -78,8 +80,8 @@ async function runTests() {
       }
     }
   }
-  
-  // Reset
+
+  // Reset state to make sure we measure setting to new text on each editor
   for (let id in EDITORS) {
     EDITORS[id].editor?.setValue("");
   }
@@ -113,7 +115,6 @@ async function runTests() {
   }
   console.timeEnd("Automated run");
   running = false;
-
 }
 
 const radioContainer = document.querySelector("#editor-options");

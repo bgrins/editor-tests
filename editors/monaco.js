@@ -39,5 +39,8 @@ export default function (element, value) {
     setValue(value) {
       editor.setValue(value);
     },
+    format(on) {
+      monaco.editor.setModelLanguage(editor.getModel(), on ? "javascript" : "plaintext");
+    },
   };
 }

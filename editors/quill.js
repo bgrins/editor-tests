@@ -11,5 +11,6 @@ export default function (element, value) {
   return {
     editor: quill,
     setValue: (value) => quill.setText(value),
+    format(on) {},
   };
 }

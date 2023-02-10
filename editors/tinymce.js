@@ -42,5 +42,6 @@ export default function (element, value) {
     setValue(value) {
       tinymce.activeEditor.setContent(value);
     },
+    format(on) {},
   };
 }

@@ -20,5 +20,6 @@ export default function (element, value) {
       view.dispatch({
         changes: { from: 0, to: view.state.doc.length, insert: value },
       }),
+    format(on) {},
   };
 }
