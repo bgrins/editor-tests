@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodeMirror STR</title>
+  </head>
+  <body>
+    <header style="display: flex">
+      <strong>CodeMirror STR</strong> <button id="run">Run</button>
+    </header>
+    <main id="app">
+      <div id="editors">
+        <div id="empty" class="active empty-message">Press the Run button</div>
+        <div id="editor-CodeMirror" hidden></div>
+      </div>
+    </main>
+    <script type="module">
+      import codemirror from "./editors/codemirror.js";
+      import bigcode from "./codebig.js";
+      document.querySelector("#run").addEventListener("click", run);
+      let el = document.querySelector(`#editor-CodeMirror`);
+      let editor = codemirror(el, "");
+      function run() {
+        document.querySelector("#empty").hidden = true;
+        editor.setValue(bigcode);
+        el.hidden = false;
+      }
+    </script>
+  </body>
+</html>
