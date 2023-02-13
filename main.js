@@ -19,7 +19,7 @@ const RAF_BETWEEN_STEPS = new URLSearchParams(window.location.search).has(
 const DEFAULT_EDITOR = new URLSearchParams(window.location.search).get(
   "editor"
 );
-const ALLOW_QUILL = new URLSearchParams(window.location.search).has("quill");
+const DISALLOW_QUILL = new URLSearchParams(window.location.search).has("quill");
 const AUTO_RUN = new URLSearchParams(window.location.search).has("autorun");
 const EDITORS = {
   Monaco: {
@@ -40,7 +40,7 @@ const EDITORS = {
   },
   Quill: {
     ctor: quill,
-    disabled: !ALLOW_QUILL, // Disabled by default due to MutationEvents
+    disabled: !!DISALLOW_QUILL, // Possible to disable due to using MutationEvents
     type: "text",
   },
   EditorJS: {
