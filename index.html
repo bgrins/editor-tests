@@ -13,9 +13,8 @@
   </head>
   <body>
     <header>
-      <h1>Editor tests <button id="run">Run</button></h1>
+      <h1>Editor tests <button id="run">Run</button><button id="show-logs">Logs</button></h1>
       
-
       <div id="editor-options" class="options"></div>
       <div class="options">
         <input id="large-size" checked name="size" type="radio" value="100" />
@@ -44,7 +43,12 @@
           Click on one of the editors above, or press the Run button for all of them.
         </div>
       </div>
+      
     </main>
+    
+    <dialog id="dialog">
+      <pre id="logs"></pre>
+    </dialog>
     <script type="module" src="/main.js"></script>
   </body>
 </html>

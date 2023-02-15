@@ -12,6 +12,7 @@ import bigcode from "./codebig.js";
 import smallcode from "./codesmall.js";
 
 let container = document.querySelector("#editors");
+let logs = [];
 const USE_DELAY = new URLSearchParams(window.location.search).has("delay");
 const RAF_BETWEEN_STEPS = new URLSearchParams(window.location.search).has(
   "raf"
@@ -183,6 +184,11 @@ for (let id in EDITORS) {
 }
 
 document.querySelector("#run").addEventListener("click", runTests);
+
+document.querySelector("#show-logs").addEventListener("click", () => {
+  document.querySelector("dialog pre").textContent = performance;
+  document.querySelector("dialog").showModal();
+});
 
 window.addEventListener("resize", () => {
   currentSelectedEditor()?.resize();
