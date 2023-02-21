@@ -98,7 +98,18 @@ async function runTests() {
     EDITORS[id].editor?.setValue("");
   }
 
+  let lastEditor;
   for (let [editor, textSize, size, style] of permutations) {
+    if (lastEditor !== editor.value) {
+      if (lastEditor) {
+        performance.measure(
+          `editor-duration: ${lastEditor}`,
+          `editor-start ${lastEditor}`
+        );
+      }
+      performance.mark(`editor-start ${editor.value}`);
+      lastEditor = editor.value;
+    }
     performance.mark(
       `${editor.value} - ${size.value}% viewport - ${textSize.value} text length - ${style.value} formatting`
     );
@@ -140,6 +151,10 @@ async function runTests() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
+  performance.measure(
+    `editor-duration: ${lastEditor}`,
+    `editor-start ${lastEditor}`
+  );
   console.timeEnd("Automated run");
   running = false;
 }
