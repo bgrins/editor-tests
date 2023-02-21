@@ -121,7 +121,18 @@ async function runTests() {
     ed.editor.setValue(ed.type == "code" ? currentCode() : currentText());
     ed.editor.format(currentFormatting());
 
+    performance.measure(
+      `step-duration: ${editor.value} - ${size.value}% viewport - ${textSize.value} text length - ${style.value} formatting`,
+      `${editor.value} - ${size.value}% viewport - ${textSize.value} text length - ${style.value} formatting`
+    );
+    performance.mark(
+      `step-raf ${editor.value} - ${size.value}% viewport - ${textSize.value} text length - ${style.value} formatting`
+    );
     await new Promise((resolve) => requestAnimationFrame(resolve));
+    performance.measure(
+      `step-raf-duration: ${editor.value} - ${size.value}% viewport - ${textSize.value} text length - ${style.value} formatting`,
+      `step-raf ${editor.value} - ${size.value}% viewport - ${textSize.value} text length - ${style.value} formatting`
+    );
     console.timeEnd(
       `${editor.value} - ${size.value}% viewport - ${textSize.value} text length - ${style.value} formatting`
     );
